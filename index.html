@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>TimeMark • Presensi Bento Coffee</title>
+
+    <style>
+        :root {
+            /* Palette - WCAG AAA compliant */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #14141c;
+            --bg-card: #1a1a26;
+            --bg-glass: rgba(22, 22, 34, 0.75);
+            --text-primary: #f0f0f5;
+            --text-secondary: #c5c5d2;
+            --text-muted: #8b8b9e;
+            --accent: #4da3ff;
+            --accent-hover: #6bb5ff;
+            --accent-glow: rgba(77, 163, 255, 0.35);
+            --success: #34c759;
+            --success-hover: #48d66c;
+            --danger: #ff453a;
+            --danger-hover: #ff5f55;
+            --warning: #ffd60a;
+            --warning-text: #1a1a00;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(255, 255, 255, 0.2);
+            --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.6);
+            --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.45);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --radius-xl: 20px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --radius-full: 9999px;
+            --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            --transition-fast: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            --focus-ring: 0 0 0 3px rgba(77, 163, 255, 0.55);
+            --focus-ring-offset: 0 0 0 6px rgba(77, 163, 255, 0.15);
+        }
+
+        /* Light theme overrides */
+        [data-theme="light"] {
+            --bg-primary: #f5f5f8;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.78);
+            --text-primary: #111118;
+            --text-secondary: #3a3a4a;
+            --text-muted: #6e6e80;
+            --border-subtle: rgba(0, 0, 0, 0.07);
+            --border-active: rgba(0, 0, 0, 0.18);
+            --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.07);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --accent: #0066d6;
+            --accent-hover: #0077f0;
+            --accent-glow: rgba(0, 102, 214, 0.25);
+        }
+
+        /* Respect user's motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            :root {
+                --transition-fast: 0ms;
+                --transition-smooth: 0ms;
+                --transition-bounce: 0ms;
+            }
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            :root {
+                --bg-primary: #000000;
+                --bg-secondary: #000000;
+                --bg-card: #000000;
+                --text-primary: #ffffff;
+                --text-secondary: #ffffff;
+                --border-subtle: rgba(255, 255, 255, 0.4);
+                --border-active: rgba(255, 255, 255, 0.7);
+                --accent: #5db8ff;
+                --success: #3ceb6a;
+                --danger: #ff5e52;
+            }
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            padding: clamp(12px, 3vw, 24px);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color var(--transition-smooth), color var(--transition-smooth);
+        }
+
+        /* Skip navigation for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 16px;
+            background: var(--accent);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            z-index: 1000;
+            font-weight: 700;
+            text-decoration: none;
+            transition: top var(--transition-fast);
+            font-family: var(--font-body);
+        }
+        .skip-link:focus {
+            top: 16px;
+            outline: none;
+            box-shadow: var(--focus-ring), var(--focus-ring-offset);
+        }
+
+        /* Main container */
+        .app-container {
+            width: 100%;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .app-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.3rem, 4vw, 1.6rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .app-title .icon {
+            font-size: 1.5em;
+            line-height: 1;
+        }
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            color: var(--text-primary);
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        .theme-toggle:hover {
+            border-color: var(--border-active);
+            background: var(--bg-glass);
+            box-shadow: var(--shadow-sm);
+        }
+        .theme-toggle:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+            border-color: var(--accent);
+        }
+        .theme-toggle:active {
+            transform: scale(0.94);
+        }
+
+        /* Card wrapper */
+        .camera-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-subtle);
+            transition: all var(--transition-smooth);
+            position: relative;
+        }
+
+        /* Camera viewport */
+        .viewport {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #000;
+            overflow: hidden;
+            cursor: default;
+        }
+        .viewport video,
+        .viewport canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .viewport video {
+            z-index: 1;
+        }
+        .viewport canvas {
+            z-index: 2;
+        }
+
+        /* Flash overlay */
+        .flash-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            background: #ffffff;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 60ms ease-out;
+            border-radius: inherit;
+        }
+        .flash-overlay.active {
+            opacity: 0.9;
+            transition: opacity 40ms ease-in;
+        }
+
+        /* Countdown overlay */
+        .countdown-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .countdown-number {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 12vw, 7rem);
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 60px rgba(0, 0, 0, 0.7), 0 0 120px rgba(0, 0, 0, 0.5);
+            letter-spacing: -0.04em;
+            animation: countPulse 0.9s ease-out;
+            opacity: 0;
+        }
+        .countdown-number.visible {
+            opacity: 1;
+            animation: countPulse 0.9s ease-out;
+        }
+        @keyframes countPulse {
+            0% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+            30% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.85);
+                opacity: 0.6;
+            }
+        }
+
+        /* Status bar */
+        .status-bar {
+            padding: 12px 16px;
+            text-align: center;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: color var(--transition-fast);
+        }
+        .status-bar.warning {
+            color: var(--warning);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+        @keyframes dotPulse {
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 6px var(--success);
+            }
+            50% {
+                opacity: 0.4;
+                box-shadow: 0 0 2px var(--success);
+            }
+        }
+
+        /* Controls area */
+        .controls-area {
+            padding: 16px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Select styling */
+        .select-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 140px;
+            max-width: 200px;
+        }
+        .select-wrapper select {
+            width: 100%;
+            padding: 13px 40px 13px 16px;
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border-subtle);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            transition: all var(--transition-fast);
+            letter-spacing: 0.01em;
+        }
+        .select-wrapper select:hover {
+            border-color: var(--border-active);
+        }
+        .select-wrapper select:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+            border-color: var(--accent);
+        }
+        .select-wrapper::after {
+            content: '▾';
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            transition: color var(--transition-fast);
+        }
+        .select-wrapper:focus-within::after {
+            color: var(--accent);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 13px 22px;
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .btn:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring), var(--focus-ring-offset);
+        }
+        .btn:active {
+            transform: scale(0.96);
+            transition: transform 80ms ease-out;
+        }
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000000;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            flex: 1;
+            min-width: 140px;
+            max-width: 220px;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 24px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: scale(0.96) translateY(0);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #000000;
+            box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
+            flex: 1;
+            min-width: 140px;
+            max-width: 220px;
+        }
+        .btn-success:hover {
+            background: var(--success-hover);
+            box-shadow: 0 6px 24px rgba(52, 199, 89, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+            flex: 1;
+            min-width: 120px;
+            max-width: 180px;
+        }
+        .btn-danger:hover {
+            background: var(--danger);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(255, 69, 58, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Ripple effect */
+        .btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: rippleEffect 0.6s ease-out;
+            pointer-events: none;
+        }
+        @keyframes rippleEffect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Watermark on preview */
+        .watermark-info {
+            text-align: center;
+            padding: 0 16px 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .watermark-info .pin-icon {
+            font-size: 1rem;
+        }
+
+        /* Screen visibility */
+        #cameraScreen,
+        #previewScreen {
+            transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+        }
+        .screen-hidden {
+            display: none !important;
+        }
+
+        /* Geolocation status */
+        .geo-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+        .geo-indicator.active {
+            color: var(--success);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 14px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-subtle);
+            z-index: 100;
+            transition: transform var(--transition-bounce);
+            pointer-events: none;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 380px) {
+            .controls-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .select-wrapper,
+            .btn {
+                max-width: 100%;
+                flex: auto;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <!-- Preconnect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Skip link for keyboard users -->
+    <a href="#mainContent" class="skip-link" aria-label="Lewati ke konten utama">Lewati ke konten utama</a>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Main App -->
+    <main class="app-container" id="mainContent" aria-label="Aplikasi TimeMark Presensi">
+
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-title">
+                <span class="icon" aria-hidden="true">📸</span>
+                TimeMark
+            </h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Ganti tema tampilan" title="Ganti tema gelap/terang" type="button">
+                🌙
+            </button>
+        </header>
+
+        <!-- Camera Screen -->
+        <section id="cameraScreen" class="camera-card" aria-label="Layar kamera">
+            <div class="viewport" id="viewport">
+                <video id="video" autoplay playsinline muted aria-label="Pratinjau kamera langsung"></video>
+                <div class="flash-overlay" id="flashOverlay"></div>
+                <div class="countdown-overlay" id="countdownOverlay">
+                    <span class="countdown-number" id="countdownNumber"></span>
+                </div>
+            </div>
+            <div class="status-bar" id="statusBar">
+                <span class="status-dot" aria-hidden="true"></span>
+                <span id="statusText">Kamera siap</span>
+                <span class="geo-indicator" id="geoIndicator" aria-label="Status lokasi"></span>
+            </div>
+            <div class="controls-area">
+                <div class="controls-row">
+                    <div class="select-wrapper">
+                        <select id="timerMode" aria-label="Pilih mode timer foto">
+                            <option value="0">⚡ Tanpa Timer</option>
+                            <option value="3">⏱ Timer 3 detik</option>
+                            <option value="5">⏱ Timer 5 detik</option>
+                            <option value="10">⏱ Timer 10 detik</option>
+                        </select>
+                    </div>
+                    <button id="captureBtn" class="btn btn-primary" aria-label="Ambil foto sekarang" type="button">
+                        📷 Jepret Foto
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preview Screen -->
+        <section id="previewScreen" class="camera-card screen-hidden" aria-label="Layar pratinjau hasil foto">
+            <div class="viewport" id="previewViewport">
+                <canvas id="canvas" aria-label="Hasil foto dengan watermark"></canvas>
+            </div>
+            <div class="watermark-info">
+                <span class="pin-icon" aria-hidden="true">📍</span>
+                <span id="watermarkLabel">Watermark: Waktu • Tanggal • Lokasi</span>
+            </div>
+            <div class="controls-area">
+                <div class="controls-row">
+                    <button id="retakeBtn" class="btn btn-danger" aria-label="Ulangi pengambilan foto" type="button">
+                        🔄 Ulangi
+                    </button>
+                    <button id="shareBtn" class="btn btn-success" aria-label="Bagikan foto ke WhatsApp" type="button">
+                        💬 Teruskan ke WA
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        (function() {
+            // ─────────────────────────────────────
+            // DOM Elements
+            // ─────────────────────────────────────
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const cameraScreen = document.getElementById('cameraScreen');
+            const previewScreen = document.getElementById('previewScreen');
+            const captureBtn = document.getElementById('captureBtn');
+            const retakeBtn = document.getElementById('retakeBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            const timerMode = document.getElementById('timerMode');
+            const statusText = document.getElementById('statusText');
+            const statusBar = document.getElementById('statusBar');
+            const flashOverlay = document.getElementById('flashOverlay');
+            const countdownOverlay = document.getElementById('countdownOverlay');
+            const countdownNumber = document.getElementById('countdownNumber');
+            const themeToggle = document.getElementById('themeToggle');
+            const toast = document.getElementById('toast');
+            const geoIndicator = document.getElementById('geoIndicator');
+            const watermarkLabel = document.getElementById('watermarkLabel');
+
+            let currentImageFile = null;
+            let stream = null;
+            let isCapturing = false;
+            let geolocationData = null;
+            let countdownInterval = null;
+
+            // ─────────────────────────────────────
+            // Toast notification
+            // ─────────────────────────────────────
+            let toastTimeout;
+
+            function showToast(message, duration = 2500) {
+                clearTimeout(toastTimeout);
+                toast.textContent = message;
+                toast.classList.add('show');
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, duration);
+            }
+
+            // ─────────────────────────────────────
+            // Theme Toggle
+            // ─────────────────────────────────────
+            function initTheme() {
+                const savedTheme = localStorage.getItem('timemark-theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeIcon(savedTheme);
+            }
+
+            function updateThemeIcon(theme) {
+                themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+                themeToggle.setAttribute('aria-label',
+                    theme === 'dark' ? 'Ganti ke tema terang' : 'Ganti ke tema gelap');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('timemark-theme', newTheme);
+                updateThemeIcon(newTheme);
+                showToast(newTheme === 'dark' ? '🌙 Mode gelap aktif' : '☀️ Mode terang aktif');
+            });
+
+            // ─────────────────────────────────────
+            // Ripple effect on buttons
+            // ─────────────────────────────────────
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('pointerdown', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    ripple.style.width = size + 'px';
+                    ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    this.appendChild(ripple);
+                    ripple.addEventListener('animationend', () => ripple.remove());
+                });
+            });
+
+            // ─────────────────────────────────────
+            // Camera initialization
+            // ─────────────────────────────────────
+            async function startCamera() {
+                try {
+                    statusText.textContent = 'Meminta akses kamera...';
+                    statusBar.classList.remove('warning');
+
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: 'environment',
+                            width: { ideal: 1920 },
+                            height: { ideal: 1440 }
+                        },
+                        audio: false
+                    });
+
+                    video.srcObject = stream;
+                    await video.play();
+
+                    statusText.textContent = 'Kamera siap • menghadap belakang';
+                    captureBtn.disabled = false;
+
+                } catch (err) {
+                    console.error('Camera error:', err);
+                    statusText.textContent = '⚠️ Gagal mengakses kamera. Periksa izin.';
+                    statusBar.classList.add('warning');
+                    captureBtn.disabled = true;
+
+                    if (err.name === 'NotAllowedError') {
+                        showToast('🚫 Izin kamera ditolak. Buka pengaturan browser.');
+                    } else if (err.name === 'NotFoundError') {
+                        showToast('📷 Tidak ada kamera yang terdeteksi.');
+                    } else {
+                        showToast('❌ Gagal mengakses kamera.');
+                    }
+                }
+            }
+
+            function stopCamera() {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                    video.srcObject = null;
+                }
+            }
+
+            // ─────────────────────────────────────
+            // Geolocation
+            // ─────────────────────────────────────
+            function fetchGeolocation() {
+                if (!navigator.geolocation) {
+                    geoIndicator.textContent = '📍 tidak tersedia';
+                    geoIndicator.classList.remove('active');
+                    return;
+                }
+
+                geoIndicator.textContent = '📍 mencari...';
+                geoIndicator.classList.remove('active');
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        geolocationData = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            accuracy: position.coords.accuracy
+                        };
+                        geoIndicator.textContent = '📍 lokasi didapat';
+                        geoIndicator.classList.add('active');
+                    },
+                    (err) => {
+                        console.warn('Geolocation error:', err);
+                        geolocationData = null;
+                        geoIndicator.textContent = '📍 tidak diizinkan';
+                        geoIndicator.classList.remove('active');
+                    }, {
+                        enableHighAccuracy: false,
+                        timeout: 6000,
+                        maximumAge: 300000 // 5 minutes cache
+                    }
+                );
+            }
+
+            // ─────────────────────────────────────
+            // Countdown & Capture
+            // ─────────────────────────────────────
+            captureBtn.addEventListener('click', () => {
+                if (isCapturing) return;
+                const timer = parseInt(timerMode.value);
+                if (timer > 0) {
+                    startCountdown(timer);
+                } else {
+                    triggerCapture();
+                }
+            });
+
+            function startCountdown(seconds) {
+                if (isCapturing) return;
+                isCapturing = true;
+                captureBtn.disabled = true;
+                let timeLeft = seconds;
+
+                statusText.textContent = `⏳ Bersiap... ${timeLeft} detik`;
+                countdownNumber.textContent = timeLeft;
+                countdownNumber.classList.add('visible');
+                countdownOverlay.style.display = 'flex';
+
+                // Trigger the pulse animation
+                countdownNumber.style.animation = 'none';
+                void countdownNumber.offsetWidth;
+                countdownNumber.style.animation = 'countPulse 0.9s ease-out';
+
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft > 0) {
+                        countdownNumber.textContent = timeLeft;
+                        countdownNumber.style.animation = 'none';
+                        void countdownNumber.offsetWidth;
+                        countdownNumber.style.animation = 'countPulse 0.9s ease-out';
+                        statusText.textContent = `⏳ Bersiap... ${timeLeft} detik`;
+                    } else {
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
+                        countdownNumber.textContent = '';
+                        countdownNumber.classList.remove('visible');
+                        countdownOverlay.style.display = 'none';
+                        statusText.textContent = '📸 Memotret!';
+                        triggerCapture();
+                    }
+                }, 1000);
+            }
+
+            function triggerCapture() {
+                if (!stream || !video.videoWidth) {
+                    showToast('⚠️ Kamera belum siap');
+                    isCapturing = false;
+                    captureBtn.disabled = false;
+                    return;
+                }
+
+                // Flash effect
+                flashOverlay.classList.add('active');
+                setTimeout(() => {
+                    flashOverlay.classList.remove('active');
+                }, 120);
+
+                // Small delay for flash to be visible
+                setTimeout(() => {
+                    processPicture();
+                }, 60);
+            }
+
+            // ─────────────────────────────────────
+            // Process picture with watermark
+            // ─────────────────────────────────────
+            function processPicture() {
+                const vw = video.videoWidth;
+                const vh = video.videoHeight;
+
+                canvas.width = vw;
+                canvas.height = vh;
+
+                // Draw video frame
+                ctx.drawImage(video, 0, 0, vw, vh);
+
+                // ── Watermark: Glassmorphism card ──
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                const dateString = now.toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                // Determine location text
+                let locationText = 'Bento Coffee';
+                if (geolocationData) {
+                    locationText = `📍 ${geolocationData.lat.toFixed(4)}, ${geolocationData.lng.toFixed(4)}`;
+                }
+
+                // Responsive watermark sizing based on canvas width
+                const scaleFactor = Math.max(vw / 1920, 0.55);
+                const cardW = Math.round(520 * scaleFactor);
+                const cardH = Math.round(110 * scaleFactor);
+                const cardX = Math.round(24 * scaleFactor);
+                const cardY = Math.round(vh - cardH - 24 * scaleFactor);
+                const cardRadius = Math.round(18 * scaleFactor);
+
+                // Glassmorphism card
+                ctx.save();
+
+                // Backdrop blur simulation with semi-transparent layers
+                // Base glass layer
+                ctx.fillStyle = 'rgba(18, 18, 28, 0.55)';
+                ctx.beginPath();
+                roundedRect(ctx, cardX, cardY, cardW, cardH, cardRadius);
+                ctx.fill();
+
+                // Subtle border
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+                ctx.lineWidth = Math.round(1.5 * scaleFactor);
+                ctx.beginPath();
+                roundedRect(ctx, cardX, cardY, cardW, cardH, cardRadius);
+                ctx.stroke();
+
+                // Inner highlight (top)
+                const innerGrad = ctx.createLinearGradient(cardX, cardY, cardX, cardY + cardH * 0.5);
+                innerGrad.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
+                innerGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = innerGrad;
+                ctx.beginPath();
+                roundedRect(ctx, cardX + 2, cardY + 2, cardW - 4, cardH * 0.5, cardRadius - 2);
+                ctx.fill();
+
+                // Typography
+                const timeFontSize = Math.round(36 * scaleFactor);
+                const dateFontSize = Math.round(18 * scaleFactor);
+                const locFontSize = Math.round(16 * scaleFactor);
+                const paddingX = Math.round(20 * scaleFactor);
+                const textBaseY = cardY + Math.round(cardH * 0.38);
+
+                // Time
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `700 ${timeFontSize}px "Plus Jakarta Sans", "Inter", system-ui, sans-serif`;
+                ctx.textBaseline = 'middle';
+                ctx.fillText(timeString, cardX + paddingX, textBaseY);
+
+                // Date
+                ctx.fillStyle = '#d5d5e0';
+                ctx.font = `500 ${dateFontSize}px "Inter", system-ui, sans-serif`;
+                ctx.fillText(dateString, cardX + paddingX, textBaseY + Math.round(28 * scaleFactor));
+
+                // Location tag
+                const locY = textBaseY;
+                const locX = cardX + cardW - paddingX;
+                ctx.fillStyle = '#ffd60a';
+                ctx.font = `600 ${locFontSize}px "JetBrains Mono", "SF Mono", monospace`;
+                ctx.textAlign = 'right';
+                ctx.fillText(locationText, locX, locY);
+
+                // Small dot indicator
+                ctx.fillStyle = '#34c759';
+                ctx.beginPath();
+                const dotX = locX - ctx.measureText(locationText).width - Math.round(14 * scaleFactor);
+                const dotY = locY;
+                ctx.arc(dotX, dotY, Math.round(5 * scaleFactor), 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.textAlign = 'start';
+                ctx.textBaseline = 'alphabetic';
+                ctx.restore();
+
+                // Convert to file
+                canvas.toBlob((blob) => {
+                    const fileName = `TimeMark_Bento_${now.getTime()}.jpg`;
+                    currentImageFile = new File([blob], fileName, { type: 'image/jpeg' });
+
+                    // Update watermark info
+                    watermarkLabel.textContent = `Watermark: ${timeString} • ${dateString} • ${locationText}`;
+
+                    // Switch to preview
+                    switchToPreview();
+
+                    // Reset capture state
+                    isCapturing = false;
+                    captureBtn.disabled = false;
+                    statusText.textContent = '✅ Foto berhasil diproses';
+                }, 'image/jpeg', 0.88);
+            }
+
+            function roundedRect(ctx, x, y, w, h, r) {
+                ctx.moveTo(x + r, y);
+                ctx.lineTo(x + w - r, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                ctx.lineTo(x + w, y + h - r);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                ctx.lineTo(x + r, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                ctx.lineTo(x, y + r);
+                ctx.quadraticCurveTo(x, y, x + r, y);
+            }
+
+            function switchToPreview() {
+                cameraScreen.classList.add('screen-hidden');
+                previewScreen.classList.remove('screen-hidden');
+                // Focus management for accessibility
+                shareBtn.focus({ preventScroll: true });
+                previewScreen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            function switchToCamera() {
+                previewScreen.classList.add('screen-hidden');
+                cameraScreen.classList.remove('screen-hidden');
+                currentImageFile = null;
+                statusText.textContent = 'Kamera siap';
+                captureBtn.focus({ preventScroll: true });
+                cameraScreen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // ─────────────────────────────────────
+            // Retake button
+            // ─────────────────────────────────────
+            retakeBtn.addEventListener('click', () => {
+                currentImageFile = null;
+                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                switchToCamera();
+            });
+
+            // ─────────────────────────────────────
+            // Share button (Web Share API)
+            // ─────────────────────────────────────
+            shareBtn.addEventListener('click', async () => {
+                if (!currentImageFile) {
+                    showToast('⚠️ Tidak ada foto untuk dibagikan');
+                    return;
+                }
+
+                const shareData = {
+                    files: [currentImageFile],
+                    title: 'Presensi Bento Coffee',
+                    text: '📸 Presensi / Laporan TimeMark - Bento Coffee',
+                };
+
+                if (navigator.canShare && navigator.canShare(shareData)) {
+                    try {
+                        shareBtn.disabled = true;
+                        shareBtn.textContent = '⏳ Membuka...';
+                        await navigator.share(shareData);
+                        showToast('✅ Foto siap diteruskan ke WhatsApp');
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            console.error('Share error:', err);
+                            showToast('⚠️ Gagal membagikan foto');
+                        }
+                    } finally {
+                        shareBtn.disabled = false;
+                        shareBtn.textContent = '💬 Teruskan ke WA';
+                    }
+                } else {
+                    // Fallback: download the image
+                    showToast('📥 Browser tidak mendukung share, mengunduh foto...');
+                    const url = URL.createObjectURL(currentImageFile);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = currentImageFile.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast('✅ Foto diunduh. Kirim manual ke WhatsApp.');
+                }
+            });
+
+            // ─────────────────────────────────────
+            // Keyboard shortcuts
+            // ─────────────────────────────────────
+            document.addEventListener('keydown', (e) => {
+                // Space or Enter to capture (when camera screen is visible)
+                if ((e.key === ' ' || e.key === 'Enter') &&
+                    !cameraScreen.classList.contains('screen-hidden') &&
+                    !isCapturing &&
+                    document.activeElement !== timerMode) {
+                    e.preventDefault();
+                    captureBtn.click();
+                }
+                // Escape to retake
+                if (e.key === 'Escape' &&
+                    !previewScreen.classList.contains('screen-hidden')) {
+                    e.preventDefault();
+                    retakeBtn.click();
+                }
+            });
+
+            // ─────────────────────────────────────
+            // Handle page visibility (save battery)
+            // ─────────────────────────────────────
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // Page hidden - could stop camera to save battery
+                    // But we keep it running for quick return
+                } else {
+                    // Page visible again
+                    if (stream && video.paused) {
+                        video.play().catch(() => {});
+                    }
+                }
+            });
+
+            // ─────────────────────────────────────
+            // Initialize
+            // ─────────────────────────────────────
+            function init() {
+                initTheme();
+                captureBtn.disabled = true;
+                startCamera();
+                fetchGeolocation();
+
+                // Refresh geolocation periodically (every 3 minutes)
+                setInterval(fetchGeolocation, 180000);
+            }
+
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                stopCamera();
+                if (countdownInterval) clearInterval(countdownInterval);
+            });
+
+            // Start the app
+            init();
+
+            console.log('%c📸 TimeMark PWA %c• v2.0 %c• Bento Coffee',
+                'font-size:1.2em;font-weight:bold;',
+                'color:#4da3ff;',
+                'color:#ffd60a;');
+            console.log('%cAksesibilitas WCAG AA/AAA • Glassmorphism • Geolocation',
+                'color:#8b8b9e;font-style:italic;');
+        })();
+    </script>
+</body>
+</html>
